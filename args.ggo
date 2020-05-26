@@ -1,0 +1,12 @@
+# config.ggo
+# Ficheiro de configuração do programa SO
+purpose "Este programa tem como objetivo…"
+package "freqCounter"
+version "1.0"
+
+# Options
+option "file" f "A string option, for a filename" string typestr="filename" optional multiple
+option "dir" d "A string option, for a directory" string typestr="dirname" optional
+option "time" - "Shows time of execution" optional
+
+option "mode" m "Mode of operation" values="1","2","4" default="1" int optional
