@@ -1,6 +1,7 @@
 ./vscode
 args.c
 args.h
+freqCounter
 
 # Prerequisites
 *.d

@@ -122,10 +122,39 @@ void readQuadBytes(FILE *fptr, char *filename){
             }
         }
 
-
+        // Needs fixing for quad bytes values
         qsort(combinations, insertedCombinations, sizeof(unsigned int), compareNumbers);
         
         printHashtable(filename, hashTable, combinations, insertedCombinations, "quad-byte");
+        freeHashTable(hashTable);
+        free(combinations);
+}
+
+void readBytes(FILE *fptr, char *filename, unsigned int *values){
+        uint8_t byte;
+        int elements_read;
+
+        HashTable *hashTable = NULL;
+
+        unsigned int *combinations = NULL;
+        unsigned int insertedCombinations = 0;
+
+        
+        hashTable = createHashTable(BYTE_HASH_TABLE_SIZE, BYTE_HASH_VALUE);
+        if (hashTable == NULL) {
+            exit(1);
+        }
+        
+        while(!feof(fptr)){
+            elements_read = fread(&byte, sizeof(byte), 1, fptr);
+            if(elements_read == 1){
+                combinations = insertInHashTable(hashTable, byte, combinations, &insertedCombinations);
+            }
+        }
+
+
+        qsort(combinations, insertedCombinations, sizeof(unsigned int), compareNumbers);
+        printHashtable(filename, hashTable, combinations, insertedCombinations, "byte");
         freeHashTable(hashTable);
         free(combinations);
 }

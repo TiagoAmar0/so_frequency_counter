@@ -28,6 +28,7 @@ int printHashtable(char* filename, HashTable *hashTable, unsigned int *combinati
         }
 
         printf("sum: %lu\n", hashTable->totalRead);
+        printf("---------\n\n");
         return 0;
 }
 

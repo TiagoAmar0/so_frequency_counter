@@ -5,8 +5,11 @@ package "freqCounter"
 version "1.0"
 
 # Options
-option "file" f "A string option, for a filename" string typestr="filename" optional multiple
+option "compact" c "Compact mode" flag off
 option "dir" d "A string option, for a directory" string typestr="dirname" optional
-option "time" - "Shows time of execution" optional
-
+option "discrete" - "Discrete mode" long optional multiple
+option "file" f "A string option, for a filename" string typestr="filename" optional multiple
 option "mode" m "Mode of operation" values="1","2","4" default="1" int optional
+option "output" o "Outputs results to file" string typestr="filename" optional
+option "search" s "search mode"  string optional
+option "time" - "Shows time of execution" optional
