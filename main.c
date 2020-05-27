@@ -146,7 +146,7 @@ int main(int argc, char *argv[]){
 	if(args_info.time_given){
 		end = clock();
 
-		printf("\nTime: %f", ((double) (end - start)) / CLOCKS_PER_SEC);
+		printf("\ntime: %f seconds\n", ((double) (end - start)) / CLOCKS_PER_SEC);
 	}
 	
 	cmdline_parser_free (&args_info);

@@ -1,15 +1,16 @@
 # config.ggo
 # Ficheiro de configuração do programa SO
-purpose "Este programa tem como objetivo…"
+purpose "This program has the objective of counting the number of occurencies of a determined type of elements like bytes, duo-bytes and quad-bytes in given file(s). It can search for hexadecimal values and output in text"
 package "freqCounter"
+description "Frequency Counter developed by Ricardo José Ramalhete Ribeiro (a2191261) and Tiago Amaro Reis Jorge (a2191236)"
 version "1.0"
 
 # Options
-option "compact" c "Compact mode" flag off
-option "dir" d "A string option, for a directory" string typestr="dirname" optional
-option "discrete" - "Discrete mode" long optional multiple
-option "file" f "A string option, for a filename" string typestr="filename" optional multiple
-option "mode" m "Mode of operation" values="1","2","4" default="1" int optional
-option "output" o "Outputs results to file" string typestr="filename" optional
-option "search" s "search mode"  string optional
-option "time" - "Shows time of execution" flag off
+option "compact"    c "Compact mode. Proccess files indicated by --file/-f and/or --dir/-d and outputs them whithout any spaces (compact mode). Not compatible with --discrete and --search" flag off
+option "dir"        d "Specifies a directory in which all files will be processed by the program. Subdirectories are not considered" string typestr="dirname" optional
+option "discrete"   - "Discrete mode. Retrieves only the information of given elements. Not compatible with --compact/-c and --search/-s" long optional multiple
+option "file"       f "Specifies what file(s) will be processed by the program" string typestr="filename" optional multiple
+option "mode"       m "Mode of operation. Specifies which mode will be used in file occurencies reading. If 1, considers bytes. 2 for duo-bytes and 4 for quad-bytes." values="1","2","4" default="1" int optional
+option "output"     o "Indicates in which file the data will be outputed instead of the prompt" string typestr="filename" optional
+option "search"     s "Search Mode. Receives a hexadecimal string that representes a sequency of bytes and lists the offset(s) of the file in which the sequency occurs."  string optional
+option "time"       - "Shows time of execution" flag off
