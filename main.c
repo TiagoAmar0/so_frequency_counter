@@ -27,11 +27,17 @@ struct gengetopt_args_info args_info;
 
 int main(int argc, char *argv[]){
 
+	// Args validations
 	if (cmdline_parser(argc,argv,&args_info) !=	0){
 		exit(1);
 	}
 
-	char *path = NULL;
+	// Variables to measure execution time
+	clock_t start, end;
+
+	if(args_info.time_given){
+		start = clock();
+	}
 	
 	if(!args_info.file_given && !args_info.dir_given){
 		ERROR(ERR_ARGS, "--file/-f or --dir/-d parameters must be entered.");
@@ -45,11 +51,57 @@ int main(int argc, char *argv[]){
 		ERROR(ERR_ARGS, "--search/-s is not compatible with --discrete.");
 	}
 
+	// Args validation end
+
+
+	char *path = NULL;
+	Info info;
+
+	// Define info according to parameters
+	if(args_info.compact_flag){
+		info.compact = 1;
+	} else {
+		info.compact = 0;
+	}
+	
+	if(args_info.discrete_given){
+		info.discrete = 1;
+		info.discrete_values = args_info.discrete_arg;
+		info.discrete_values_total = args_info.discrete_given;
+	} else {
+		info.discrete = 0;
+	}
+
+	info.mode = args_info.mode_arg;
+
+	if(args_info.search_given){
+		info.search = 1;
+		info.search_value = args_info.search_arg;
+	} else {
+		info.search = 0;
+	}
+
+	if(args_info.output_given){
+		info.output = 1;
+		info.output_target = args_info.output_arg;
+		    // Creates / Truncates file
+			FILE *fptr = NULL;
+			fptr = openFile(info.output_target, "w");
+			if(fptr == NULL){
+				WARNING("\nERROR:'%s': CANNOT PROCCESS DATA TO OUTPUT FILE\n-----\n", info.output_target); 
+				exit(1);
+			}
+			fclose(fptr);
+	} else {
+		info.output = 0;
+	}
+	// END: Define info according to parameters
+
 
 	// Manages the input of --file / -f option
 	if(args_info.file_given){
 		for(unsigned int i = 0; i < args_info.file_given; i++){
-			readFile(args_info.file_arg[i], args_info.mode_arg);
+			readFile(args_info.file_arg[i], info);
 		}
 	}
 
@@ -65,13 +117,24 @@ int main(int argc, char *argv[]){
 		while((dirent = readdir(directory)) != NULL){
 			path = checkIfIsRegularFile(args_info.dir_arg, dirent->d_name, &status);
 			if(status == 0){
-				readFile(path, args_info.mode_arg);
+				readFile(path, info);
 			}
 		}
 
 		closedir(directory);
 	}
+
+	// Free resources
 	free(path);
+
+
+	if(args_info.time_given){
+		end = clock();
+
+		printf("\nTime: %f", ((double) (end - start)) / CLOCKS_PER_SEC);
+	}
+	
+	cmdline_parser_free (&args_info);
 	return 0;
 }
 

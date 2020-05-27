@@ -8,14 +8,37 @@
 #include "table.h"
 #include "memory.h"
 
-int printHashtable(char* filename, HashTable *hashTable, unsigned int *combinations, unsigned int insertedCombinations, char *description) {
+void printHashtableCompact(char* filename, HashTable *hashTable, long filesize, unsigned int *combinations, unsigned int inserted_combinations){
         
         List *list;
         int hashCode;
 
-        printf("freqCounter:'%s': x bytes\n", filename);
+        printf("freqCounter:'%s':%ld bytes:", filename, filesize);
 
-        for(unsigned int i = 0; i < insertedCombinations; i++){
+        for(unsigned int i = 0; i < inserted_combinations; i++){
+            hashCode = hash(combinations[i], hashTable->size, hashTable->hash);
+
+            for(list = hashTable->nodeList[hashCode]; list != NULL; list = list->next){
+                if(list->key == combinations[i]){
+                    printf("%lu", list->frequency);
+                    continue;
+                }
+            }
+
+        }
+
+        printf(":%lu\n", hashTable->totalRead);
+        printf("------------------------------------------------------------\n\n");
+}
+
+void printHashtable(char* filename, HashTable *hashTable, long filesize, unsigned int *combinations, unsigned int inserted_combinations, char *description) {
+        
+        List *list;
+        int hashCode;
+
+        printf("freqCounter:'%s': %lu bytes\n", filename, filesize);
+
+        for(unsigned int i = 0; i < inserted_combinations; i++){
             hashCode = hash(combinations[i], hashTable->size, hashTable->hash);
 
             for(list = hashTable->nodeList[hashCode]; list != NULL; list = list->next){
@@ -28,8 +51,7 @@ int printHashtable(char* filename, HashTable *hashTable, unsigned int *combinati
         }
 
         printf("sum: %lu\n", hashTable->totalRead);
-        printf("---------\n\n");
-        return 0;
+        printf("----------\n\n");
 }
 
 HashTable *createHashTable(unsigned int size, int hash){
@@ -118,7 +140,7 @@ char* itoa(int val, int base){
 }
 
 // Validates if the node is an insetion or if it was already inserted and is just needed to update values
-unsigned int *nodeHandler(HashTable *hashTable, List *node, unsigned int *combinations, unsigned int *insertedCombinations){
+unsigned int *nodeHandler(HashTable *hashTable, List *node, unsigned int *combinations, unsigned int *inserted_combinations){
     unsigned int hashCode = hash(node->key, hashTable->size, hashTable->hash);
     //printf("BYTE -> %u | SIZE -> %u | HASH -> %i\n", node->key, hashTable->size, hashTable->hash);
     List *temp = hashTable->nodeList[hashCode];
@@ -142,14 +164,14 @@ unsigned int *nodeHandler(HashTable *hashTable, List *node, unsigned int *combin
             hashTable->nodeList[hashCode] = node;
             
             // Add new byte(s) combination to dynamic vector
-            combinations = realloc(combinations, sizeof(unsigned int) * (*insertedCombinations + 1));
+            combinations = realloc(combinations, sizeof(unsigned int) * (*inserted_combinations + 1));
             if(combinations == NULL){
                 printf("Error reallocating memory for a new combination. Aborting\n\n");
                 exit(1);
             }
 
-            combinations[*insertedCombinations] = node->key;
-            (*insertedCombinations)++;
+            combinations[*inserted_combinations] = node->key;
+            (*inserted_combinations)++;
 
         } else {
             free(node);
@@ -159,14 +181,14 @@ unsigned int *nodeHandler(HashTable *hashTable, List *node, unsigned int *combin
         node->frequency = 1;
         hashTable->nodeList[hashCode] = node;
         // Add new byte(s) combination to dynamic vector
-        combinations = realloc(combinations, sizeof(unsigned int) * (*insertedCombinations + 1));
+        combinations = realloc(combinations, sizeof(unsigned int) * (*inserted_combinations + 1));
         if(combinations == NULL){
             printf("Error reallocating memory for a new combination. Aborting\n\n");
             exit(1);
         }
 
-        combinations[*insertedCombinations] = node->key;
-        (*insertedCombinations)++;
+        combinations[*inserted_combinations] = node->key;
+        (*inserted_combinations)++;
     }
 
     hashTable->totalRead++;
@@ -174,7 +196,7 @@ unsigned int *nodeHandler(HashTable *hashTable, List *node, unsigned int *combin
 }
 
 // Inserts / Updates information about a byte combination on the HashTable
-unsigned int *insertInHashTable(HashTable *hashTable, unsigned int byte, unsigned int *combinations, unsigned int *insertedCombinations){
+unsigned int *insertInHashTable(HashTable *hashTable, unsigned int byte, unsigned int *combinations, unsigned int *inserted_combinations){
     List *node;
 
     if(hashTable == NULL){
@@ -188,7 +210,7 @@ unsigned int *insertInHashTable(HashTable *hashTable, unsigned int byte, unsigne
 
     node->key = byte;
 
-    combinations = nodeHandler(hashTable, node, combinations, insertedCombinations);
+    combinations = nodeHandler(hashTable, node, combinations, inserted_combinations);
 
     return combinations;
 }
