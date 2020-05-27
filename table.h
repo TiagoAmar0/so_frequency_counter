@@ -22,10 +22,11 @@ typedef struct HashTable
 
 int hash(unsigned int byte, int size, int hash);
 char* itoa(int val, int base);
-unsigned int *nodeHandler(HashTable *hashTable, List *node, unsigned int *combinations, unsigned int *insertedCombinations);
+unsigned int *nodeHandler(HashTable *hashTable, List *node, unsigned int *combinations, unsigned int *inserted_combinations);
 void freeHashTable(HashTable *hashTable);
 HashTable *createHashTable(unsigned int size, int hash);
-unsigned int *insertInHashTable(HashTable *hashTable, unsigned int byte, unsigned int *combinations, unsigned int *insertedCombinations);
-int printHashtable(char* filename, HashTable *hashTable, unsigned int *combinations, unsigned int insertedCombinations, char *description);
+unsigned int *insertInHashTable(HashTable *hashTable, unsigned int byte, unsigned int *combinations, unsigned int *inserted_combinations);
+void printHashtable(char* filename, HashTable *hashTable, long filesize, unsigned int *combinations, unsigned int inserted_combinations, char *description);
+void printHashtableCompact(char* filename, HashTable *hashTable, long filesize, unsigned int *combinations, unsigned int inserted_combinations);
 
 #endif 

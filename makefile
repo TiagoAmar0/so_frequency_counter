@@ -50,9 +50,9 @@ $(PROGRAM_OPT).o: $(PROGRAM_OPT).c $(PROGRAM_OPT).h
 
 debug.o: debug.c debug.h
 memory.o: memory.c memory.h
-counter.o: counter.c counter.h debug.h table.h memory.h
+counter.o: counter.c counter.h debug.h table.h memory.h files.h
 table.o: table.c table.h memory.h
-files.o: files.c files.h memory.h debug.h
+files.o: files.c files.h memory.h debug.h table.h
 
 # disable warnings from gengetopt generated files
 $(PROGRAM_OPT).o: $(PROGRAM_OPT).c $(PROGRAM_OPT).h
