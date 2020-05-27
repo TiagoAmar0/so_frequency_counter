@@ -51,8 +51,15 @@ int main(int argc, char *argv[]){
 		ERROR(ERR_ARGS, "--search/-s is not compatible with --discrete.");
 	}
 
-	// Args validation end
+	// If search mode is active, validates imput
+	if(args_info.search_given){
+		// Validates if string is a valid hexadecimal value
+		if(validateHexString(args_info.search_arg) == 1){
+			ERROR(ERR_ARGS, "freqCounter:invalid value ‘%s’ for -s/--search (needs to be specified in HEX format)", args_info.search_arg);
+		}
+	}
 
+	// Args validation end
 
 	char *path = NULL;
 	Info info;
@@ -84,14 +91,14 @@ int main(int argc, char *argv[]){
 	if(args_info.output_given){
 		info.output = 1;
 		info.output_target = args_info.output_arg;
-		    // Creates / Truncates file
-			FILE *fptr = NULL;
-			fptr = openFile(info.output_target, "w");
-			if(fptr == NULL){
-				WARNING("\nERROR:'%s': CANNOT PROCCESS DATA TO OUTPUT FILE\n-----\n", info.output_target); 
-				exit(1);
-			}
-			fclose(fptr);
+		// Creates / Truncates file
+		FILE *fptr = NULL;
+		fptr = openFile(info.output_target, "w");
+		if(fptr == NULL){
+			WARNING("\nERROR:'%s': CANNOT PROCCESS DATA TO OUTPUT FILE\n-----\n", info.output_target); 
+			exit(1);
+		}
+		fclose(fptr);
 	} else {
 		info.output = 0;
 	}
@@ -101,7 +108,11 @@ int main(int argc, char *argv[]){
 	// Manages the input of --file / -f option
 	if(args_info.file_given){
 		for(unsigned int i = 0; i < args_info.file_given; i++){
-			readFile(args_info.file_arg[i], info);
+			if(args_info.search_given){
+				searchInFile(args_info.file_arg[i], info);
+			} else {
+				readFile(args_info.file_arg[i], info);
+			}
 		}
 	}
 
@@ -117,7 +128,11 @@ int main(int argc, char *argv[]){
 		while((dirent = readdir(directory)) != NULL){
 			path = checkIfIsRegularFile(args_info.dir_arg, dirent->d_name, &status);
 			if(status == 0){
-				readFile(path, info);
+				if(args_info.search_given){
+					searchInFile(path, info);
+				} else {
+					readFile(path, info);
+				}
 			}
 		}
 

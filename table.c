@@ -64,12 +64,14 @@ HashTable *createHashTable(unsigned int size, int hash){
 
     hashTable = (HashTable *) MALLOC(sizeof(HashTable));
     if(hashTable == NULL){
-        return (NULL);
+        printf("ERROR: Cannot allocate memory for hashtable\n");
+        exit(1);
     }
 
     hashTable->nodeList = (List **) MALLOC(size * sizeof(List));
     if(hashTable->nodeList == NULL){
-        return (NULL);
+        printf("ERROR: Cannot allocate memory for hashtable\n");
+        exit(1);
     }
 
     memset(hashTable->nodeList, 0, size * sizeof(List));
@@ -96,8 +98,6 @@ void freeHashTable(HashTable *hashTable)
                         /* Traverse the list and free the nodes. */
                         while(hashTable->nodeList[i] != NULL) {
                           tmp = hashTable->nodeList[i]->next;
-                        //   free(hashTable->nodeList[i]->key);
-                        //   free(hashTable->nodeList[i]->frequency);
                           free(hashTable->nodeList[i]);
                           hashTable->nodeList[i] = tmp;
                         }

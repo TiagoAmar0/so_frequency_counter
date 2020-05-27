@@ -34,4 +34,7 @@ void readQuadBytes(FILE *fptr, char *filename, Info info);
 int compareNumbers(const void * a, const void * b);
 unsigned int findInLongArray(unsigned int value, long *array, unsigned int total);
 void outputData(char *filename, HashTable *hashTable, Info info, unsigned int *combinations, unsigned int inserted_combinations, char* description);
+int validateHexString(char *string);
+void searchInFile(char *filename, Info info);
+
 #endif
